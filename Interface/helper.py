@@ -106,7 +106,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
   coordinates_changed = np.zeros_like(crime_matrix)
 
   final_difference_crime_matrix = calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity, effectivity)
-  
+  print(final_difference_crime_matrix.sum())
   final_crime_matrix = np.copy(crime_matrix)
   number_of_fields = impacted_fields(distance, cctv_effectivity)
   cctv_matrix = np.zeros_like(final_difference_crime_matrix)
