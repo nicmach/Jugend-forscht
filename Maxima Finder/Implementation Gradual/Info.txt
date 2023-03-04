@@ -1,0 +1,9 @@
+Working implementation for placing the cameras at the highest values within the difference matrix, wihtout recaclulating
+the difference matrix after each placement. 
+
+Improvements:
+
+    - Buffer area in which only one camera is allowed to be placed (maybe depending on city size). This becomes
+      especially important, when smaller field numbers are chosen.
+    - A similiar implementation, that does not utilise a difference matrix might perform worse when placing cameras,
+      but would be significantly faster.

@@ -30,7 +30,7 @@ def main_calculate(file_path, effective_range, grid_distance, crime_type, cctv_n
     start_time = time.time()
     crime_matrix_test, long_diff, lat_diff, lat_min, long_min, long_max, lat_max = create_crime_type_matrix(data, distance=grid_distance, crimeType=crime_type)
     print(crime_matrix_test.shape)
-    crime_matrix_test_final_crime, crime_matrix_test_cctv, crime_matrix_test_final_difference, changed = cctv_placement(crime_matrix_test, cctv_number, grid_distance, effective_range, cctv_effectivity)
+    crime_matrix_test_final_crime, crime_matrix_test_cctv = cctv_placement(crime_matrix_test, cctv_number, grid_distance, effective_range, cctv_effectivity)
     # Time messurement
     end_time = time.time()
     elapsed_time = end_time - start_time
