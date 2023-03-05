@@ -6,6 +6,7 @@ import folium
 from folium.plugins import HeatMap
 
 # NOTE: There is an approximation made here (i.e. that the latitudes, when calculating the distance between longitudes, are the same)
+# As we are normally working with smaller distances, this should make pretty much no difference.
 
 # This function is used to determine the number of partitions to be made, based on an approximate distance (e.g. according to baltimore police CCTV is effective in ca. 256ft)
 def calculate_partition_amount(data, distance=0.050):
@@ -144,7 +145,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
             if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
                 if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
-                  if (row != row_indices[i]) and (col != col_indices[i]):
+                  if (row != row_indices[i]) and (current_col + col != col_indices[i]):
                     cctv_matrix[row, current_col + col] = 1
 
       elif cctv_matrix[current_row, current_col] == 1:
@@ -155,7 +156,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
           for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
             if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
               if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-                if (row != row_indices[i]) and (col != col_indices[i]):
+                if (row != row_indices[i]) and (current_col + col != col_indices[i]):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
                   cctv_matrix[row, current_col + col] = 1
 
