@@ -124,7 +124,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
             if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
                 if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
-                  if (row != row_indices[i]) and (current_col + col != col_indices[i]):
+                  if (row != row_indices[i]) or (current_col + col != col_indices[i]):
                     cctv_matrix[row, current_col + col] = 1
 
       elif cctv_matrix[current_row, current_col] == 1:
@@ -135,7 +135,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
           for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
             if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
               if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-                if (row != row_indices[i]) and (current_col + col != col_indices[i]):
+                if (row != row_indices[i]) or (current_col + col != col_indices[i]):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
                   cctv_matrix[row, current_col + col] = 1
 
