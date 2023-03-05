@@ -79,7 +79,7 @@ def calculate_difference_matrix(crime_matrix, cctv_matrix, distance, cctv_effect
 
       for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
         for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-          if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
+          if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
             if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
               sum += crime_matrix[row][current_col + col]
 
@@ -103,7 +103,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
   indices_sorted = indices[np.argsort(difference_crime_matrix_flat[indices])]
   indices_sorted = indices_sorted[::-1]
   row_indices, col_indices = np.unravel_index(indices_sorted, difference_crime_matrix.shape)
-  print(difference_crime_matrix[row_indices[:100], col_indices[:100]])
+  # print(difference_crime_matrix[row_indices[:100], col_indices[:100]])
 
   # For the gradual implementation of the maxima finder algorithm the difference matrix is
   # calculated after a certain number of cameras was placed. This number is defined by the
@@ -142,7 +142,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
 
         for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
           for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
+            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
                 if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
                   if (row != row_indices[i]) or (current_col + col != col_indices[i]):
@@ -154,7 +154,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
         
         for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
           for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col - col >= 0):
+            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
               if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
                 if (row != row_indices[i]) or (current_col + col != col_indices[i]):
                   final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
