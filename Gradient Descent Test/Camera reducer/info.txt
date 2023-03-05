@@ -1,0 +1,4 @@
+This algorithm currently places cameras as ideal as possible and deletes / does not place unnecessary cameras. 
+The difference between the camera reducer (this alogrithm) and the camera placer is line 119 in gradient_descent.
+While the camera placer makes sure that no two cameras are placed at the same spot, camera reducer does not
+care about this and only looks for local maxima.

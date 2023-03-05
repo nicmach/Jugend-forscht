@@ -1,0 +1,3 @@
+Changing the algorithms in a way, where they are executed multiple times and then 
+returning the best result, is the next step. One could also pair them with a more 
+efficient difference_matrix calculation (this holds true for all algorithms).
