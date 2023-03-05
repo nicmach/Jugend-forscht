@@ -3,6 +3,7 @@ import numpy as np
 import geopy.distance
 import math
 import folium
+import random
 from folium.plugins import HeatMap
 
 # NOTE: There is an approximation made here (i.e. that the latitudes, when calculating the distance between longitudes, are the same)
@@ -101,26 +102,112 @@ def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cct
 
   return crime_difference_matrix
 
-def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.078, effectivity=0):
-  
-  coordinates_changed = np.zeros_like(crime_matrix)
+def find_maxima(crime_matrix, current_row, current_col, num_rows, num_cols, gradient_area=5):
 
-  difference_crime_matrix = calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity, effectivity)
-  
-  final_crime_matrix = np.copy(crime_matrix)
-  number_of_fields = impacted_fields(distance, cctv_effectivity)
-  cctv_matrix = np.zeros_like(final_crime_matrix)
+      #print(str(current_row) + " : " + str(current_col))
+      current_row = current_row
+      current_col = current_col
+
+      adjacent_values = {}
+
+
+      # gradient_area denotes how far the algorithm looks for higher values within the matrix.
+      for row in range(current_row - gradient_area, current_row + gradient_area + 1):
+        for col in range(current_col - gradient_area, current_col + gradient_area + 1):
+
+          if (row < num_rows) and (row >= 0) and (current_col + col < num_cols) and (current_col - col >= 0) and (row != current_row) and (col + current_col!= current_col):
+
+            adjacent_values[crime_matrix[row, col]] = [row, col]
+
+      larger_values = []
+      larger_values = [key for key in adjacent_values if key >= crime_matrix[current_row, current_col]]
+      
+      #print(larger_values)
+
+      if len(larger_values) != 0:
+
+        largest_value = max(larger_values)
+
+        new_row = adjacent_values[largest_value][0]
+        new_col = adjacent_values[largest_value][1]
+
+        try:
+          return find_maxima(crime_matrix, new_row, new_col, num_rows, num_cols)
+        except:
+          return current_row, current_col
+
+      else: 
+        #print(str(current_row) + " : " + str(current_col))
+
+        return current_row, current_col
+
+
+def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.078, effectivity=0, gradient_area=5):
+
+  number_of_fields = 1
+  cctv_matrix = np.zeros_like(crime_matrix)
   num_rows, num_cols = crime_matrix.shape
 
+  print(str(num_rows) + " : " + str(num_cols))
+
+  cameras_placed = 0
+
+  while cameras_placed < cctv_number:
+
+    rand_row = random.randint(0, num_rows-1)
+    rand_col = random.randint(0, num_cols-1)
+
+    print("These are the random variables: " + str(rand_row) + " : " + str(rand_col))
+
+    placed = False
+
+    # The 1 is the current threshold for a camera to be placed.
+    if crime_matrix[rand_row, rand_col] >= 1:
+      while placed != True:
+
+        if (cctv_matrix[rand_row, rand_col] != 1) and (cctv_matrix[rand_row, rand_col] != 2):
+
+          current_row = rand_row
+          current_col = rand_col
+
+          print("It worked")
+
+
+          maxima_row, maxima_col = find_maxima(crime_matrix, current_row, current_col, num_rows, num_cols, gradient_area)
+
+          # row and col for local maxima
+
+          cctv_matrix[maxima_row, maxima_col] = 2
+          cameras_placed += 1
+          placed = True
+
+          for row in range(maxima_row - number_of_fields, maxima_row + number_of_fields + 1):
+            for col in range(-1 * (number_of_fields - abs(maxima_row - row)), number_of_fields - abs(maxima_row - row) + 1):
+
+              if (row < num_rows) and (row >= 0) and (col + maxima_col < num_cols) and (maxima_col + col >= 0):
+
+                if (row != maxima_row) or (maxima_col + col != maxima_col):
+                    
+                  cctv_matrix[row, maxima_col + col] = 1
+
+        else:
+
+          rand_row = random.randint(0, num_rows-1)
+          rand_col = random.randint(0, num_cols-1)
+
+  mult_matrix = cctv_matrix.astype(np.float32)
+  mult_matrix[mult_matrix > 0] = 1 - effectivity
+  mult_matrix[mult_matrix == 0] = 1
+
+  final_crime_matrix = np.multiply(crime_matrix, mult_matrix)
+  final_crime_matrix = np.rint(final_crime_matrix)
+      
+  return final_crime_matrix, cctv_matrix
+
+
   
 
-  i = 0
-  #coordinates_visited = []
-
-  while i < cctv_number:
-    
   
-  return final_crime_matrix, cctv_matrix, final_difference_crime_matrix, coordinates_changed
 
 def crime_reduced_cost(crime_matrix, crime_matrix_final):
   return np.sum(crime_matrix) - np.sum(crime_matrix_final)
