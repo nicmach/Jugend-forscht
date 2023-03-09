@@ -1,0 +1,44 @@
+Date : 2023-03-05 18:37:47
+Directory : c:\Users\Moritz\Documents\Jugend forscht
+Total : 11 files,  1188 codes, 108 comments, 675 blanks, all 1971 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Python   |         10 |      1,185 |        108 |        674 |      1,967 |
+| Markdown |          1 |          3 |          0 |          1 |          4 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                              | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                 |         11 |      1,188 |        108 |        675 |      1,971 |
+| . (Files)                                                                                         |          1 |          3 |          0 |          1 |          4 |
+| Base Algorithm                                                                                    |          2 |        255 |         31 |        141 |        427 |
+| Gradient Descent Test                                                                             |          4 |        488 |         44 |        297 |        829 |
+| Gradient Descent Test\Camera placer                                                               |          2 |        245 |         22 |        149 |        416 |
+| Gradient Descent Test\Camera reducer                                                              |          2 |        243 |         22 |        148 |        413 |
+| Maxima Finder                                                                                     |          4 |        442 |         33 |        236 |        711 |
+| Maxima Finder\Implementation Gradual                                                              |          2 |        227 |         19 |        120 |        366 |
+| Maxima Finder\Implementation Total                                                                |          2 |        215 |         14 |        116 |        345 |
++---------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                          | language | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| c:\Users\Moritz\Documents\Jugend forscht\Base Algorithm\helper.py                                 | Python   |        184 |         24 |        105 |        313 |
+| c:\Users\Moritz\Documents\Jugend forscht\Base Algorithm\main.py                                   | Python   |         71 |          7 |         36 |        114 |
+| c:\Users\Moritz\Documents\Jugend forscht\Gradient Descent Test\Camera placer\gradient_descent.py  | Python   |        172 |         15 |        112 |        299 |
+| c:\Users\Moritz\Documents\Jugend forscht\Gradient Descent Test\Camera placer\main.py              | Python   |         73 |          7 |         37 |        117 |
+| c:\Users\Moritz\Documents\Jugend forscht\Gradient Descent Test\Camera reducer\gradient_descent.py | Python   |        170 |         15 |        111 |        296 |
+| c:\Users\Moritz\Documents\Jugend forscht\Gradient Descent Test\Camera reducer\main.py             | Python   |         73 |          7 |         37 |        117 |
+| c:\Users\Moritz\Documents\Jugend forscht\Maxima Finder\Implementation Gradual\main.py             | Python   |         71 |          7 |         36 |        114 |
+| c:\Users\Moritz\Documents\Jugend forscht\Maxima Finder\Implementation Gradual\maxima.py           | Python   |        156 |         12 |         84 |        252 |
+| c:\Users\Moritz\Documents\Jugend forscht\Maxima Finder\Implementation Total\main.py               | Python   |         71 |          7 |         36 |        114 |
+| c:\Users\Moritz\Documents\Jugend forscht\Maxima Finder\Implementation Total\maxima.py             | Python   |        144 |          7 |         80 |        231 |
+| c:\Users\Moritz\Documents\Jugend forscht\README.md                                                | Markdown |          3 |          0 |          1 |          4 |
+| Total                                                                                             |          |      1,188 |        108 |        675 |      1,971 |
++---------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

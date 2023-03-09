@@ -62,7 +62,7 @@ def impacted_fields(distance, cctv_effectivity=0.078):
   fields =  math.floor((cctv_effectivity - 0.5 * distance) / distance) # The 0.5 * distance resembles the fact, that the camera is placed in the middle of the field
   return fields
 
-def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity=0.078, effectivity=0):
+def calculate_difference_matrix(crime_matrix, distance, cctv_effectivity=0.078, effectivity=0):
 
   number_of_fields = impacted_fields(distance, cctv_effectivity)
   crime_difference_matrix = np.zeros_like(crime_matrix)
@@ -75,28 +75,12 @@ def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cct
       current_row = index1 
       current_col = index2
 
-      iterator = number_of_fields
-
       sum = 0
-      
-      if coordinates_changed[current_row][current_col] != 1:
-        sum = crime_matrix[current_row][current_col]
 
-      for k in range(1, iterator+1):
-
-          row_above = current_row + k 
-          row_under = current_row - k 
-          col_right = current_col + k 
-          col_left = current_col - k 
-
-          if (row_above < num_rows) and (row_above > current_row) and (coordinates_changed[row_above][current_col] != 1):  # and ((row_above - current_row) <= iterator) 
-            sum += crime_matrix[row_above][current_col]
-          if (row_under >= 0) and (row_under < current_row) and (coordinates_changed[row_under][current_col] != 1):    # ((current_row - row_under) <= iterator)
-            sum += crime_matrix[row_under][current_col]
-          if (col_right < num_cols) and (col_right > current_col) and (coordinates_changed[current_row][col_right] != 1): 
-            sum += crime_matrix[current_row][col_right]
-          if (col_left >= 0) and (col_left < current_col) and (coordinates_changed[current_row][col_left] != 1):   
-            sum += crime_matrix[current_row][col_left]
+      for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
+        for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
+          if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
+             sum += crime_matrix[row][current_col + col]
 
       crime_difference_matrix[current_row][current_col] = sum * effectivity
 
