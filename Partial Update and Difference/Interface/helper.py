@@ -135,9 +135,8 @@ def update_difference_matrix(crime_matrix, crime_difference_matrix, coordinates_
     current_row = coord[0]
     current_col = coord[1]
 
-    # -2 and +3 are an extra buffer
-    for row in range(current_row - 2 * number_of_fields, current_row + 2 * number_of_fields + 1):
-      for col in range(-1 * (2 * number_of_fields - abs(current_row - row)), (2 * number_of_fields - abs(current_row - row)) + 1):
+    for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
+      for col in range(-1 * (number_of_fields - abs(current_row - row)), (number_of_fields - abs(current_row - row)) + 1):
 
         crime_difference_matrix = calculate_difference(row, current_col + col, crime_matrix_edit, crime_difference_matrix, coordinates_changed, number_of_fields, effectivity)
         crime_difference_matrix[coordinates_changed == 1] = 0
@@ -182,12 +181,12 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
         for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
           if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
             if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-              final_crime_matrix[row, current_col] = final_crime_matrix[row, current_col] * (1-effectivity)
-              cctv_matrix[row, current_col] = 1
+              final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
+              cctv_matrix[row, current_col + col] = 1
               #final_difference_crime_matrix[row, current_col] = 0
 
-              coordinates_changed[row, current_col] = 1
-              coordinates_last_changed.append((row, current_col))
+              coordinates_changed[row, current_col + col] = 1
+              coordinates_last_changed.append((row, current_col + col))
     
       cctv_matrix[current_row, current_col] = 2
       i += 1
@@ -198,12 +197,12 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
         for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
           if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
             if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-              final_crime_matrix[row, current_col] = final_crime_matrix[row, current_col] * (1-effectivity)
-              cctv_matrix[row, current_col] = 1
+              final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
+              cctv_matrix[row, current_col + col] = 1
               #final_difference_crime_matrix[row, current_col] = 0
 
-              coordinates_changed[row, current_col] = 1
-              coordinates_last_changed.append((row, current_col))
+              coordinates_changed[row, current_col + col] = 1
+              coordinates_last_changed.append((row, current_col + col))
 
       cctv_matrix[current_row, current_col] = 2
       i += 1
@@ -211,8 +210,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
     print(time.time() - start)
         
   print(np.sum(cctv_matrix==2)) 
-  #final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity, effectivity)
-  final_difference_crime_matrix = calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity, effectivity)
+  final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity, effectivity)
   return final_crime_matrix, cctv_matrix, final_difference_crime_matrix, coordinates_changed
 
 def crime_reduced_cost(crime_matrix, crime_matrix_final):
