@@ -1,5 +1,5 @@
 from folium.plugins import HeatMap
-from gradient_descent import *
+from gradient_ascent import *
 
 import customtkinter
 import pandas as pd
