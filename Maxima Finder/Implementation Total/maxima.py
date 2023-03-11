@@ -95,9 +95,6 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
   cctv_matrix = np.zeros_like(final_crime_matrix)
   num_rows, num_cols = crime_matrix.shape
 
-  
-
-  # Getting the highest values of the difference matrix (corresponding to the cctv_number)
   difference_crime_matrix_flat = difference_crime_matrix.flatten()
   indices = np.argpartition(difference_crime_matrix_flat, -int(cctv_number*20))[-int(cctv_number*20):]
   indices_sorted = indices[np.argsort(difference_crime_matrix_flat[indices])]

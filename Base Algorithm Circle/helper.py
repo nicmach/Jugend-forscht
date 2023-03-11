@@ -63,7 +63,6 @@ def impacted_fields(distance, cctv_effectivity=0.078):
 
 def shift(matrix, row, col):
 
-  #final_arr = np.zeros_like(matrix)
   shifted_arr = matrix
 
   if (row == 0) and (col == 0):
@@ -77,7 +76,6 @@ def shift(matrix, row, col):
   elif row > 0:
     matrix_copy_padded = np.pad(shifted_arr, ((abs(row), 0), (0, 0)), mode='constant', constant_values=0)
     shifted_arr = matrix_copy_padded[:-abs(row)]
-
   
   if col < 0:
     zeros_arr = np.zeros((matrix.shape[0], abs(col)))
@@ -88,8 +86,6 @@ def shift(matrix, row, col):
     matrix_copy_padded = np.pad(shifted_arr, ((0, 0), (0, abs(col))), mode='constant', constant_values=0)
     shifted_arr = matrix_copy_padded[:, abs(col):]
   
-  #final_arr = final_arr + shifted_arr
- 
   return shifted_arr
 
 def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity=0.078, effectivity=0):
@@ -105,7 +101,6 @@ def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cct
       
       if ((abs(row) + abs(col)) <= number_of_fields):
           field_shift = shift(crime_matrix_edit, row, col)
-          #print(field_shift)
           crime_difference_matrix = crime_difference_matrix + field_shift
 
   crime_difference_matrix = crime_difference_matrix * effectivity

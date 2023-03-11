@@ -17,7 +17,7 @@ customtkinter.set_default_color_theme('dark-blue')
 
 root = customtkinter.CTk()
 root.title('Positionsrechner')
-root.geometry("1920x1080")
+root.geometry("1280x720")
 
 
 relative_effectivity = customtkinter.IntVar()
@@ -73,7 +73,7 @@ def show_map(map):
     webbrowser.open(map)
 
 frame = customtkinter.CTkFrame(master=root)
-frame.pack(pady=100, padx=60, fill="both", expand=True)
+frame.pack(pady=15, padx=15, fill="both", expand=True)
 
 label = customtkinter.CTkLabel(master=frame, text="Positionsberechner", height=35, width=500, font=('Time New Roman',30,'bold'))
 label.pack(pady=12, padx=10)

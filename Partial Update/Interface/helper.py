@@ -167,7 +167,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
     if i==0: 
       final_difference_crime_matrix = calculate_difference_matrix(final_crime_matrix, coordinates_changed, distance, cctv_effectivity, effectivity)
     else: 
-      final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity=0.078, effectivity=0.2)
+      final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity, effectivity)
 
     coordinates_last_changed = []
 
@@ -231,7 +231,7 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
     print(time.time() - start)
         
       
-  final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity=0.078, effectivity=0.2)
+  final_difference_crime_matrix = update_difference_matrix(crime_matrix, final_difference_crime_matrix, coordinates_changed, coordinates_last_changed, distance, cctv_effectivity, effectivity)
   return final_crime_matrix, cctv_matrix, final_difference_crime_matrix, coordinates_changed
 
 def crime_reduced_cost(crime_matrix, crime_matrix_final):
