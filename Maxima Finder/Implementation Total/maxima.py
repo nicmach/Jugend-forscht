@@ -61,32 +61,55 @@ def impacted_fields(distance, cctv_effectivity=0.078):
   fields =  math.floor((cctv_effectivity - 0.5 * distance) / distance) # The 0.5 * distance resembles the fact, that the camera is placed in the middle of the field
   return fields
 
+def shift(matrix, row, col):
+
+  shifted_arr = matrix
+
+  if (row == 0) and (col == 0):
+    return matrix
+
+  if row < 0:
+    zeros_arr = np.zeros((abs(row), matrix.shape[1]))
+    matrix_copy_padded = np.vstack((shifted_arr, zeros_arr))
+    shifted_arr = matrix_copy_padded[abs(row):]
+
+  elif row > 0:
+    matrix_copy_padded = np.pad(shifted_arr, ((abs(row), 0), (0, 0)), mode='constant', constant_values=0)
+    shifted_arr = matrix_copy_padded[:-abs(row)]
+  
+  if col < 0:
+    zeros_arr = np.zeros((matrix.shape[0], abs(col)))
+    matrix_copy_padded = np.concatenate((zeros_arr, shifted_arr), axis=1)
+    shifted_arr = matrix_copy_padded[:, :-abs(col)]
+
+  elif col > 0:
+    matrix_copy_padded = np.pad(shifted_arr, ((0, 0), (0, abs(col))), mode='constant', constant_values=0)
+    shifted_arr = matrix_copy_padded[:, abs(col):]
+  
+  return shifted_arr
+
 def calculate_difference_matrix(crime_matrix, distance, cctv_effectivity=0.078, effectivity=0):
 
   number_of_fields = impacted_fields(distance, cctv_effectivity)
-  crime_difference_matrix = np.zeros_like(crime_matrix)
 
-  num_rows, num_cols = crime_matrix.shape
+  if number_of_fields != 0:
+    crime_matrix_edit = np.copy(crime_matrix)
+    crime_difference_matrix = np.zeros_like(crime_matrix_edit)
 
-  for index1 in range(num_rows):
-    for index2 in range(num_cols):
-      
-      current_row = index1 
-      current_col = index2
+    for row in range(-number_of_fields, number_of_fields + 1):
+      for col in range(-number_of_fields, number_of_fields + 1):
+        
+        if ((abs(row) + abs(col)) <= number_of_fields):
+            field_shift = shift(crime_matrix_edit, row, col)
+            crime_difference_matrix = crime_difference_matrix + field_shift
+  elif number_of_fields == 0:
+    crime_difference_matrix = np.copy(crime_matrix)
 
-      sum = 0
-
-      for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
-        for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-          if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
-             sum += crime_matrix[row][current_col + col]
-
-      crime_difference_matrix[current_row][current_col] = sum * effectivity
+  crime_difference_matrix = crime_difference_matrix * effectivity
 
   return crime_difference_matrix
 
 def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.078, effectivity=0):
-  
 
   difference_crime_matrix = calculate_difference_matrix(crime_matrix, distance, cctv_effectivity, effectivity)
   print(difference_crime_matrix.sum())
@@ -111,30 +134,35 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
 
       if (cctv_matrix[row_indices[i], col_indices[i]] != 2) and (cctv_matrix[row_indices[i], col_indices[i]] != 1): 
         cctv_matrix[row_indices[i], col_indices[i]] = 2
+        final_crime_matrix[row_indices[i], col_indices[i]] = final_crime_matrix[row_indices[i], col_indices[i]] * (1-effectivity)
         cameras_placed += 1
 
         current_row = row_indices[i] 
         current_col = col_indices[i]
 
-        for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
-          for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
-                if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-                  final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
-                  if (row != row_indices[i]) or (current_col + col != col_indices[i]):
-                    cctv_matrix[row, current_col + col] = 1
+        if number_of_fields != 0:
+          for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
+            for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
+              if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
+                  if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
+                    if (row != row_indices[i]) or (current_col + col != col_indices[i]):
+                      final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
+                      cctv_matrix[row, current_col + col] = 1
 
       elif cctv_matrix[current_row, current_col] == 1:
         cctv_matrix[current_row, current_col] = 2    
         cameras_placed += 1
         
-        for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
-          for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-            if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
-              if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
-                if (row != row_indices[i]) or (current_col + col != col_indices[i]):
-                  final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
-                  cctv_matrix[row, current_col + col] = 1
+        if number_of_fields != 0:
+          for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
+            for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
+              if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
+                if (cctv_matrix[row][current_col + col] != 1) and (cctv_matrix[row][current_col + col] != 2):
+                  if (row != row_indices[i]) or (current_col + col != col_indices[i]):
+                    final_crime_matrix[row, current_col + col] = final_crime_matrix[row, current_col + col] * (1-effectivity)
+                    cctv_matrix[row, current_col + col] = 1
+
+  print(np.sum(cctv_matrix==2))
 
   return final_crime_matrix, cctv_matrix
 

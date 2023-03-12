@@ -62,27 +62,49 @@ def impacted_fields(distance, cctv_effectivity=0.078):
   fields =  math.floor((cctv_effectivity - 0.5 * distance) / distance) # The 0.5 * distance resembles the fact, that the camera is placed in the middle of the field
   return fields
 
-def calculate_difference_matrix(crime_matrix, distance, cctv_effectivity=0.078, effectivity=0):
+def shift(matrix, row, col):
+
+  shifted_arr = matrix
+
+  if (row == 0) and (col == 0):
+    return matrix
+
+  if row < 0:
+    zeros_arr = np.zeros((abs(row), matrix.shape[1]))
+    matrix_copy_padded = np.vstack((shifted_arr, zeros_arr))
+    shifted_arr = matrix_copy_padded[abs(row):]
+
+  elif row > 0:
+    matrix_copy_padded = np.pad(shifted_arr, ((abs(row), 0), (0, 0)), mode='constant', constant_values=0)
+    shifted_arr = matrix_copy_padded[:-abs(row)]
+  
+  if col < 0:
+    zeros_arr = np.zeros((matrix.shape[0], abs(col)))
+    matrix_copy_padded = np.concatenate((zeros_arr, shifted_arr), axis=1)
+    shifted_arr = matrix_copy_padded[:, :-abs(col)]
+
+  elif col > 0:
+    matrix_copy_padded = np.pad(shifted_arr, ((0, 0), (0, abs(col))), mode='constant', constant_values=0)
+    shifted_arr = matrix_copy_padded[:, abs(col):]
+  
+  return shifted_arr
+
+def calculate_difference_matrix(crime_matrix, coordinates_changed, distance, cctv_effectivity=0.078, effectivity=0):
+
+  crime_matrix_edit = np.copy(crime_matrix)
+  crime_matrix_edit[coordinates_changed == 1] = 0
 
   number_of_fields = impacted_fields(distance, cctv_effectivity)
-  crime_difference_matrix = np.zeros_like(crime_matrix)
+  crime_difference_matrix = np.zeros_like(crime_matrix_edit)
 
-  num_rows, num_cols = crime_matrix.shape
-
-  for index1 in range(num_rows):
-    for index2 in range(num_cols):
+  for row in range(-number_of_fields, number_of_fields + 1):
+    for col in range(-number_of_fields, number_of_fields + 1):
       
-      current_row = index1 
-      current_col = index2
+      if ((abs(row) + abs(col)) <= number_of_fields):
+          field_shift = shift(crime_matrix_edit, row, col)
+          crime_difference_matrix = crime_difference_matrix + field_shift
 
-      sum = 0
-
-      for row in range(current_row - number_of_fields, current_row + number_of_fields + 1):
-        for col in range(-1 * (number_of_fields - abs(current_row - row)), number_of_fields - abs(current_row - row) + 1):
-          if (row < num_rows) and (row >= 0) and (col + current_col < num_cols) and (current_col + col >= 0):
-             sum += crime_matrix[row][current_col + col]
-
-      crime_difference_matrix[current_row][current_col] = sum * effectivity
+  crime_difference_matrix = crime_difference_matrix * effectivity
 
   return crime_difference_matrix
 

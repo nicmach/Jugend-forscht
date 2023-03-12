@@ -138,6 +138,8 @@ def cctv_placement(crime_matrix, cctv_number, distance=0.05, cctv_effectivity=0.
     current_row = np.where(final_difference_crime_matrix==current_max_value)[0][0]
     current_col = np.where(final_difference_crime_matrix==current_max_value)[1][0]
 
+    print(current_max_value)
+    print(str(current_row) + " : " + str(current_col))
     #print(current_row, current_column)   
 
     if (cctv_matrix[current_row, current_col] != 2) and (cctv_matrix[current_row, current_col] != 1): 
