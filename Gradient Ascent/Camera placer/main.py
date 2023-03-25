@@ -68,6 +68,7 @@ def main_calculate(file_path, effective_range, grid_distance, crime_type, cctv_n
     combined_map.save('combined_map.html')
     show_map('combined_map.html')
 
+    print(coordinates_cctv)
 
 def show_map(map):
     webbrowser.open(map)

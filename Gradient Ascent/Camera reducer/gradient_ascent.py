@@ -16,7 +16,7 @@ def calculate_partition_amount(data, distance=0.050):
   long_min = data['LONGITUDE'].min()
 
   # Calculating the distance between the furthest longitudes
-  
+  #try:
   coord_1 = (lat_max, long_max)
   coord_2 = (lat_max, long_min)
 
@@ -30,6 +30,9 @@ def calculate_partition_amount(data, distance=0.050):
   lat_dist = geopy.distance.geodesic(coord_1, coord_2).km
   lat_partition_amount = round(lat_dist/ distance)
   lat_diff = ( lat_max -  lat_min) /  lat_partition_amount
+  #except:
+  #  print("lat_max: " + str(lat_max) + ", long_max: " + str(long_max), ", long_min" + str(long_min), ", lat_min: " + str(lat_min))
+  
 
   return long_dist, long_partition_amount, long_diff, lat_dist, lat_partition_amount, lat_diff
 
